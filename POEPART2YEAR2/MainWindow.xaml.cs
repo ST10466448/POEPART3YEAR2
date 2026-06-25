@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Media;
 using System.Windows;
 
@@ -11,11 +12,37 @@ namespace POEPART2YEAR2
         // MEMORY VARIABLES
         private string userName = "";
         private string favouriteTopic = "";
-        private string connectionString =
-        @"Server=LabVM2049939\SQLEXPRESS;
-        Database=CyberSecurityBotDB;
-        Trusted_Connection=True;
-        TrustServerCertificate=True;";
+        private List<string> activityLog =
+        new List<string>();
+
+
+        private string connectionString = @"Server=LabVM2049939\SQLEXPRESS;Database=CyberSecurityBotDB;Trusted_Connection=True;TrustServerCertificate=True;";
+        private int currentQuestion = 0;
+        private int score = 0;
+
+        private List<QuizQuestion> quizQuestions =
+            new List<QuizQuestion>()
+        {
+        new QuizQuestion
+    {
+        Question = "What is phishing?",
+        CorrectAnswer = "A scam designed to steal information"
+    },
+
+         new QuizQuestion
+    {
+        Question = "Should you use the same password for every account?",
+        CorrectAnswer = "No"
+    },
+
+        new QuizQuestion
+    {
+        Question = "What does VPN stand for?",
+        CorrectAnswer = "Virtual Private Network"
+    }
+        };
+
+
 
         // RANDOM OBJECT
         Random random = new Random();
@@ -202,6 +229,11 @@ namespace POEPART2YEAR2
         {
             InitializeComponent();
 
+            LoadTasks();
+
+            QuestionText.Text =
+                quizQuestions[currentQuestion].Question;
+
             DisplayBotMessage("Hello! I am your Cybersecurity Awareness Bot.");
             DisplayBotMessage("What is your name?");
 
@@ -339,6 +371,172 @@ namespace POEPART2YEAR2
             {
                 DisplayBotMessage("Voice greeting unavailable.");
             }
+        }
+        private void AddTask_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (SqlConnection conn =
+                       new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query =
+                        "INSERT INTO Tasks(TaskName, ReminderDate) VALUES (@TaskName,@ReminderDate)";
+
+                    SqlCommand cmd =
+                        new SqlCommand(query, conn);
+
+                    cmd.Parameters.AddWithValue(
+                        "@TaskName",
+                        TaskNameBox.Text);
+
+                    cmd.Parameters.AddWithValue(
+                        "@ReminderDate",
+                        ReminderDatePicker.SelectedDate);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                MessageBox.Show("Task added successfully!");
+
+                LogActivity($"Task Added: {TaskNameBox.Text}");
+
+                LoadTasks();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void LoadTasks()
+        {
+            try
+            {
+                using (SqlConnection conn =
+                       new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query =
+                        "SELECT * FROM Tasks";
+
+                    SqlDataAdapter adapter =
+                        new SqlDataAdapter(query, conn);
+
+                    DataTable dt =
+                        new DataTable();
+
+                    adapter.Fill(dt);
+
+                    TaskGrid.ItemsSource =
+                        dt.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+      
+        private void DeleteTask_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TaskGrid.SelectedItem == null)
+                {
+                    MessageBox.Show("Please select a task first.");
+                    return;
+                }
+
+                DataRowView row = (DataRowView)TaskGrid.SelectedItem;
+
+                int taskID = Convert.ToInt32(row["TaskID"]);
+
+                using (SqlConnection conn =
+                       new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query =
+                        "DELETE FROM Tasks WHERE TaskID = @TaskID";
+
+                    SqlCommand cmd =
+                        new SqlCommand(query, conn);
+
+                    cmd.Parameters.AddWithValue("@TaskID", taskID);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                MessageBox.Show("Task deleted successfully!");
+
+                LogActivity($"Task Deleted: {taskID}");
+
+                LoadTasks();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void SubmitQuizAnswer_Click(object sender, RoutedEventArgs e)
+        {
+            string userAnswer = AnswerBox.Text.Trim();
+
+            string correctAnswer =
+                quizQuestions[currentQuestion].CorrectAnswer;
+
+            if (userAnswer.Equals(correctAnswer,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                score++;
+
+                MessageBox.Show("Correct!");
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"Incorrect.\nCorrect answer: {correctAnswer}");
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < quizQuestions.Count)
+            {
+                QuestionText.Text =
+                    quizQuestions[currentQuestion].Question;
+
+                AnswerBox.Clear();
+            }
+            else
+            {
+                QuestionText.Text = "Quiz Complete!";
+
+                ScoreText.Text =
+                    $"Final Score: {score}/{quizQuestions.Count}";
+            }
+
+            LogActivity("Quiz question answered.");
+        }
+    
+    private void LogActivity(string action)
+        {
+            string entry =
+                $"{DateTime.Now:HH:mm:ss} - {action}";
+
+            activityLog.Add(entry);
+
+            // Keep only the last 5 actions
+            if (activityLog.Count > 5)
+            {
+                activityLog.RemoveAt(0);
+            }
+
+            ActivityLogDisplay.Text =
+                string.Join(Environment.NewLine, activityLog);
         }
     }
 }
