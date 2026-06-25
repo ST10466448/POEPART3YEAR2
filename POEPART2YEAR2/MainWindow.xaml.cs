@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Media;
@@ -10,6 +11,11 @@ namespace POEPART2YEAR2
         // MEMORY VARIABLES
         private string userName = "";
         private string favouriteTopic = "";
+        private string connectionString =
+        @"Server=LabVM2049939\SQLEXPRESS;
+        Database=CyberSecurityBotDB;
+        Trusted_Connection=True;
+        TrustServerCertificate=True;";
 
         // RANDOM OBJECT
         Random random = new Random();
