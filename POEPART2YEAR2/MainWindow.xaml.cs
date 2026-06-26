@@ -20,28 +20,38 @@ namespace POEPART2YEAR2
         private int currentQuestion = 0;
         private int score = 0;
 
-        private List<QuizQuestion> quizQuestions =
-            new List<QuizQuestion>()
-        {
-        new QuizQuestion
+        private List<QuizQuestion> quizQuestions = new List<QuizQuestion>()
+{
+    new QuizQuestion
     {
         Question = "What is phishing?",
         CorrectAnswer = "A scam designed to steal information"
     },
 
-         new QuizQuestion
+    new QuizQuestion
+    {
+        Question = "What does VPN stand for?",
+        CorrectAnswer = "Virtual Private Network"
+    },
+
+    new QuizQuestion
     {
         Question = "Should you use the same password for every account?",
         CorrectAnswer = "No"
     },
 
-        new QuizQuestion
+    new QuizQuestion
     {
-        Question = "What does VPN stand for?",
-        CorrectAnswer = "Virtual Private Network"
-    }
-        };
+        Question = "What type of software protects your computer from viruses?",
+        CorrectAnswer = "Antivirus"
+    },
 
+    new QuizQuestion
+    {
+        Question = "What does HTTPS indicate?",
+        CorrectAnswer = "A secure website connection"
+    }
+};
 
 
         // RANDOM OBJECT
@@ -260,12 +270,23 @@ namespace POEPART2YEAR2
 
         private void HandleConversation(string input)
         {
+            if (input.Contains("show reminders") ||
+            input.Contains("my tasks") ||
+            input.Contains("show tasks"))
+            {
+                ShowTasks();
+
+                LogActivity("Viewed reminders");
+
+                return;
+            }
             // STORE USER NAME
             if (string.IsNullOrEmpty(userName))
             {
                 userName = input;
 
                 DisplayBotMessage($"Nice to meet you, {userName}!");
+                LogActivity($"User logged in: {userName}");
 
                 return;
             }
@@ -276,6 +297,7 @@ namespace POEPART2YEAR2
                 favouriteTopic = input.Replace("interested in", "").Trim();
 
                 DisplayBotMessage($"I will remember that you are interested in {favouriteTopic}.");
+                LogActivity($"Favourite topic: {favouriteTopic}");
 
                 return;
             }
@@ -504,6 +526,8 @@ namespace POEPART2YEAR2
 
             currentQuestion++;
 
+            LogActivity($"Answered Question {currentQuestion + 1}");
+
             if (currentQuestion < quizQuestions.Count)
             {
                 QuestionText.Text =
@@ -521,22 +545,54 @@ namespace POEPART2YEAR2
 
             LogActivity("Quiz question answered.");
         }
-    
-    private void LogActivity(string action)
+
+        private void LogActivity(string action)
         {
             string entry =
                 $"{DateTime.Now:HH:mm:ss} - {action}";
 
             activityLog.Add(entry);
 
-            // Keep only the last 5 actions
+            // Keep only the last 5 activities
             if (activityLog.Count > 5)
             {
                 activityLog.RemoveAt(0);
             }
 
-            ActivityLogDisplay.Text =
-                string.Join(Environment.NewLine, activityLog);
+            ActivityLogDisplay.Clear();
+
+            foreach (string log in activityLog)
+            {
+                ActivityLogDisplay.AppendText(log + Environment.NewLine);
+            }
+        }
+        private void ShowTasks()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = "SELECT TaskName, ReminderDate FROM Tasks";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    DisplayBotMessage("Here are your current reminders:");
+
+                    while (reader.Read())
+                    {
+                        DisplayBotMessage(
+                            $"• {reader["TaskName"]} - {Convert.ToDateTime(reader["ReminderDate"]).ToShortDateString()}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
-}
+    }
