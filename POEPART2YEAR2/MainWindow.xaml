@@ -42,11 +42,17 @@
 
         </Border>
 
-<TabControl Grid.Row="1">
+        <TabControl Grid.Row="1"
+            FontSize="14"
+            FontWeight="Bold"
+            Background="#1E1E1E"
+            Foreground="White"
+            BorderBrush="#00A8E8"
+            BorderThickness="2">
 
-    <TabItem Header="💬 Chatbot">
+            <TabItem Header="💬 Chatbot">
 
-        <TextBox x:Name="ChatDisplay"
+                <TextBox x:Name="ChatDisplay"
                  Background="#1E1E1E"
                  Foreground="White"
                  FontSize="16"
@@ -54,82 +60,83 @@
                  TextWrapping="Wrap"
                  AcceptsReturn="True"/>
 
-    </TabItem>
+            </TabItem>
+            
 
-    <TabItem Header="📋 Task Assistant">
+            <TabItem Header="📋 Task Assistant">
 
-        <Grid Margin="10">
+                <Grid Margin="10">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-            <TextBox x:Name="TaskNameBox"
+                    <TextBox x:Name="TaskNameBox"
                      Height="35"
                      Margin="0,0,0,10"/>
 
-            <DatePicker x:Name="ReminderDatePicker"
+                    <DatePicker x:Name="ReminderDatePicker"
                         Grid.Row="1"
                         Margin="0,0,0,10"/>
 
-            <StackPanel Grid.Row="2"
+                    <StackPanel Grid.Row="2"
                         Orientation="Horizontal">
 
-                <Button Content="Add Task"
+                        <Button Content="Add Task"
                         Width="120"
                         Click="AddTask_Click"/>
 
-                <Button Content="Delete Task"
+                        <Button Content="Delete Task"
                         Width="120"
                         Margin="10,0,0,0"
                         Click="DeleteTask_Click"/>
 
-            </StackPanel>
+                    </StackPanel>
 
-            <DataGrid x:Name="TaskGrid"
+                    <DataGrid x:Name="TaskGrid"
                       Grid.Row="3"
                       Margin="0,10,0,0"/>
 
-        </Grid>
+                </Grid>
 
-    </TabItem>
+            </TabItem>
 
-    <TabItem Header="🧠 Quiz">
+            <TabItem Header="🧠 Quiz">
 
-        <StackPanel Margin="20">
+                <StackPanel Margin="20">
 
-            <TextBlock x:Name="QuestionText"
+                    <TextBlock x:Name="QuestionText"
                        FontSize="18"
                        FontWeight="Bold"/>
 
-            <TextBox x:Name="AnswerBox"
+                    <TextBox x:Name="AnswerBox"
                      Margin="0,10,0,0"/>
 
-            <Button Content="Submit Answer"
+                    <Button Content="Submit Answer"
                     Width="150"
                     Margin="0,10,0,0"
                     Click="SubmitQuizAnswer_Click"/>
 
-            <TextBlock x:Name="ScoreText"
+                    <TextBlock x:Name="ScoreText"
                        Margin="0,20,0,0"/>
 
-        </StackPanel>
+                </StackPanel>
 
-    </TabItem>
+            </TabItem>
 
-    <TabItem Header="📜 Activity Log">
+            <TabItem Header="📜 Activity Log">
 
-        <TextBox x:Name="ActivityLogDisplay"
+                <TextBox x:Name="ActivityLogDisplay"
                  IsReadOnly="True"
                  TextWrapping="Wrap"
                  AcceptsReturn="True"/>
 
-    </TabItem>
+            </TabItem>
 
-</TabControl>
+        </TabControl>
 
         <!-- INPUT SECTION -->
         <Border Grid.Row="2"
