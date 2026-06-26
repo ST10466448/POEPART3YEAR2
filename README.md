@@ -1,25 +1,41 @@
 Youtube Link: http://youtube.com/watch?v=evC7qn3Q4ec  
 
-The Cybersecurity Awareness Chatbot is a WPF desktop application developed in C#. The purpose of the chatbot is to educate users about cybersecurity threats and safe online practices through an interactive graphical interface.
+The Cybersecurity Awareness Bot is a desktop application developed using C# and WPF in Visual Studio 2022. The application educates users about cybersecurity through an interactive chatbot, a task management system, a cybersecurity quiz and an activity log.
 
-The chatbot allows users to ask questions about cybersecurity topics such as phishing, passwords, malware, VPNs, privacy, ransomware, scams, and safe browsing.
+SQL Server Management Studio 2022 is used to store user tasks.
 
 ---
 
-# Features
+#Features
+Chatbot
+Voice greeting
+Username memory
+Favourite topic memory
+Sentiment detection
+Keyword recognition
+Random cybersecurity responses
+Multiple cybersecurity topics
+Reminder commands
+Task Assistant
+Add tasks
+Delete tasks
+View tasks
+SQL Server database integration
+Reminder dates
+Cybersecurity Quiz
+Multiple-choice style questions
+Score tracking
+Final score display
+Activity Log
 
-- Graphical User Interface (GUI) using WPF
-- Voice greeting using WAV audio
-- Keyword recognition
-- Random chatbot responses
-- Conversation flow
-- Memory and recall functionality
-- Sentiment detection
-- Error handling
-- Collections using Dictionary and List
-- Delegate implementation
-- Cybersecurity awareness tips
-- Interactive chatbot communication
+The application records:
+
+User login
+Favourite topic selection
+Tasks added
+Tasks deleted
+Quiz activity
+Reminder requests
 
 ---
 
@@ -53,5 +69,5 @@ The chatbot supports the following cybersecurity topics:
 - Safe Browsing
 
 -
-- <img width="1220" height="862" alt="image" src="https://github.com/user-attachments/assets/7e4f6ed7-5755-4741-81bb-c988942c68ae" />
+<img width="1232" height="806" alt="image" src="https://github.com/user-attachments/assets/46e09bb6-c604-4593-acbd-f3c7c2d7f154" />
 
